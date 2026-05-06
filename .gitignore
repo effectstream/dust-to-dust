@@ -1,17 +1,26 @@
 *.swp
-.yarn
-.turbo
-node_modules/
-dist/
 .DS_Store
-.vite
+
+# Frontend
+frontend/node_modules/
+frontend/.yarn
+frontend/.turbo
+frontend/dist/
+frontend/.vite
+frontend/src/contract/src/managed
+frontend/src/contract/src/game2.compact
+frontend/src/contract/coverage
+frontend/src/contract/reports
+
+# Backend
+backend/node_modules/
+backend/midnight-level-db*
+backend/packages/midnight/midnight-level-db*
+backend/packages/midnight/contract-game2/src/managed
+backend/packages/node/midnight-level-db*
+
+# Shared
 .env
 .env.local
-contract/src/managed
-contract/src/game2.compact
-contract/coverage
-contract/reports
-
-# CLI private state and deployment data
 midnight-level-db/
 .midnight-dust-to-dust/

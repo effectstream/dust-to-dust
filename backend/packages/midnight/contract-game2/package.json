@@ -1,0 +1,32 @@
+{
+  "name": "@dust2dust-backend/contract-game2",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "compact": "npm run gen && compact compile +0.30.0 src/game2.compact ./src/managed/game2 && npm run copy:frontend && npm run copy:frontend-libs",
+    "copy:frontend": "rm -rf ../../../../frontend/src/contract/src/managed/game2 && cp -R ./src/managed/game2 ../../../../frontend/src/contract/src/managed/ && cp ./src/game2.compact ../../../../frontend/src/contract/src/ && cp ./src/template.compact ../../../../frontend/src/contract/src/",
+    "copy:frontend-libs": "rm -rf ../frontend-libs/game2-contract/managed/game2 && cp -R ./src/managed/game2 ../frontend-libs/game2-contract/managed/ && cp ./src/game2.compact ../frontend-libs/game2-contract/ && cp ./src/template.compact ../frontend-libs/game2-contract/",
+    "test": "jest --passWithNoTests",
+    "prepack": "yarn build",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -Rf ./src/managed ./dist/managed && cp ./src/game2.compact ./dist",
+    "gen": "node src/generate.js",
+    "lint": "eslint src",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.15.0",
+    "eslint": "^8.52.0",
+    "jest": "^29.7.0",
+    "typescript": "^5.2.2"
+  }
+}

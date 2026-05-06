@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dust 2 Dust - How to Play</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-dark: #0d0d1a;
+    --bg-card: #151528;
+    --bg-card-border: #2a2a4a;
+    --gold: #d4a843;
+    --gold-dim: #9a7a30;
+    --gold-glow: rgba(212, 168, 67, 0.15);
+    --text: #c8c0b8;
+    --text-bright: #eae4dc;
+    --text-dim: #7a7470;
+    --fire: #e86030;
+    --ice: #50a0e0;
+    --phys: #b0b0b0;
+    --heal-green: #50c070;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  img, .sprite { image-rendering: pixelated; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13, 13, 26, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--bg-card-border);
+    display: flex; justify-content: center; gap: 1.5rem;
+    padding: 0.6rem 1rem;
+    flex-wrap: wrap;
+  }
+  nav a {
+    color: var(--gold-dim);
+    text-decoration: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--gold); }
+
+  /* ── SECTIONS ── */
+  section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 5rem 1.5rem 3rem;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: relative;
+  }
+  h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0.6rem auto 0;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--text-bright);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-card-border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-glow {
+    box-shadow: 0 0 20px var(--gold-glow), inset 0 1px 0 rgba(212,168,67,0.08);
+  }
+
+  /* ── HIGHLIGHT (Quests section) ── */
+  .section-highlight {
+    position: relative;
+    background: linear-gradient(180deg, rgba(212,168,67,0.06) 0%, transparent 60%);
+    border-radius: 12px;
+    padding-top: 6rem;
+  }
+  .highlight-banner {
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bg-dark);
+    background: linear-gradient(135deg, var(--gold), #e8c050);
+    padding: 0.35rem 1.5rem;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .highlight-card {
+    border-color: var(--gold-dim);
+    background: linear-gradient(135deg, rgba(212,168,67,0.08), var(--bg-card));
+  }
+  .highlight-step {
+    border-color: var(--gold-dim) !important;
+    background: linear-gradient(180deg, rgba(212,168,67,0.1), var(--bg-card));
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: url('bg-hub1.png') center / cover;
+    image-rendering: pixelated;
+    filter: brightness(0.35);
+    z-index: 0;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.55);
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    backdrop-filter: blur(4px);
+  }
+  .hero .midnight-badge {
+    display: inline-block;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-bright);
+    border: 1px solid rgba(212,168,67,0.4);
+    padding: 0.3rem 1.2rem;
+    border-radius: 20px;
+    margin-top: 1.5rem;
+    background: rgba(212,168,67,0.08);
+  }
+  .hero .midnight-badge span {
+    color: var(--gold);
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 40px rgba(212,168,67,0.4);
+    margin-bottom: 0.5rem;
+  }
+  .hero .tagline {
+    font-family: 'Crimson Text', serif;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--text);
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+  .hero .subtitle {
+    font-size: 1.15rem;
+    color: var(--text-bright);
+    max-width: 560px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+    line-height: 1.8;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    animation: bob 2s ease-in-out infinite;
+  }
+  .scroll-hint img { width: 32px; opacity: 0.5; transform: rotate(90deg); filter: brightness(2); }
+  @keyframes bob { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+
+  /* ── SPRITES ── */
+  .sprite {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    image-rendering: pixelated;
+  }
+  .spirit-fire  { background-image: url('spirit-atk-fire.png'); width: 64px; height: 64px; background-size: 600% 100%; }
+  .spirit-ice   { background-image: url('spirit-atk-ice.png');  width: 64px; height: 64px; background-size: 400% 100%; }
+  .spirit-phys  { background-image: url('spirit-atk-phys.png'); width: 64px; height: 64px; background-size: 400% 100%; }
+  .spirit-def   { background-image: url('spirit-def.png');      width: 64px; height: 64px; background-size: 400% 100%; }
+
+  .sprite-2x { transform: scale(2); margin: 32px; }
+  .sprite-3x { transform: scale(3); margin: 64px; }
+
+  .icon { width: 36px; height: 36px; image-rendering: pixelated; vertical-align: middle; }
+  .icon-sm { width: 24px; height: 24px; image-rendering: pixelated; vertical-align: middle; }
+  .icon-lg { width: 48px; height: 48px; image-rendering: pixelated; vertical-align: middle; }
+
+  /* ── SPIRIT SHOWCASE ── */
+  .spirit-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin: 2rem 0;
+  }
+  .spirit-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .spirit-card .label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .spirit-card .label.fire  { color: var(--fire); }
+  .spirit-card .label.ice   { color: var(--ice); }
+  .spirit-card .label.phys  { color: var(--phys); }
+  .spirit-card .label.def   { color: var(--gold); }
+
+  /* ── ICON GRID ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .icon-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--bg-card-border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+  }
+  .icon-item span { font-size: 0.95rem; }
+
+  /* ── EFFECTIVENESS TABLE ── */
+  .eff-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+  }
+  .eff-table th, .eff-table td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--bg-card-border);
+    text-align: center;
+  }
+  .eff-table th {
+    background: rgba(212,168,67,0.1);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+  }
+  .eff-super { color: #50e070; font-weight: 600; }
+  .eff-effective { color: #90d090; }
+  .eff-neutral { color: var(--text-dim); }
+  .eff-weak { color: #e07050; }
+  .eff-immune { color: #e04040; font-weight: 600; }
+
+  /* ── BIOME TEASER ── */
+  .biome-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .biome-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 180px;
+    border: 1px solid var(--bg-card-border);
+  }
+  .biome-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    filter: brightness(0.6);
+    transition: filter 0.3s, transform 0.3s;
+  }
+  .biome-card:hover img {
+    filter: brightness(0.8);
+    transform: scale(1.05);
+  }
+  .biome-card .biome-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── DECK SLOTS VISUAL ── */
+  .deck-visual {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+  .deck-slot {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--bg-card-border);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .deck-slot.filled {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 8px var(--gold-glow);
+  }
+  .deck-slot.active {
+    border-color: var(--gold);
+    box-shadow: 0 0 16px rgba(212,168,67,0.3);
+  }
+  .deck-slot .sprite { transform: scale(0.9); }
+
+  .round-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-top: 0.25rem;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .round-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .round-dot.dim { background: var(--bg-card-border); }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    background: var(--bg-card);
+    border: 1px solid var(--bg-card-border);
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--text-bright);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .flow-link {
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .flow-link:hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 12px var(--gold-glow);
+    color: var(--gold);
+  }
+  .flow-arrow {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+    filter: brightness(1.5);
+    opacity: 0.6;
+  }
+
+  /* ── UPGRADE VISUAL ── */
+  .upgrade-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+  .upgrade-stars {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .upgrade-stars img {
+    width: 21px;
+    height: 21px;
+    image-rendering: pixelated;
+  }
+  .upgrade-plus {
+    font-size: 1.5rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .upgrade-equals {
+    font-size: 1.5rem;
+    color: var(--text-dim);
+  }
+
+  /* ── SHOP SECTION ── */
+  .shop-bg {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    padding: 2rem;
+  }
+  .shop-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('bg-shop.png') center / cover;
+    image-rendering: pixelated;
+    filter: brightness(0.25);
+    z-index: 0;
+  }
+  .shop-bg > * { position: relative; z-index: 1; }
+
+  /* ── CTA ── */
+  .cta {
+    text-align: center;
+    padding: 4rem 1.5rem;
+  }
+  .cta h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+  .cta p { font-size: 1.1rem; color: var(--text); max-width: 500px; margin: 0 auto 2rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--bg-card-border);
+  }
+  footer a { color: var(--gold-dim); text-decoration: none; }
+  footer a:hover { color: var(--gold); }
+
+  /* ── ACHIEVEMENTS ── */
+  .achievement-category {
+    margin-bottom: 2rem;
+  }
+  .achievement-category h3 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--bg-card-border);
+  }
+  .achievement-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+  .achievement {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--bg-card-border);
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s;
+  }
+  .achievement:hover {
+    border-color: var(--gold-dim);
+  }
+  .achievement-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    image-rendering: pixelated;
+    margin-top: 2px;
+  }
+  .achievement-icon img {
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    border-radius: 4px;
+    filter: grayscale(1) contrast(1.1) brightness(0.9);
+  }
+  .achievement-info { flex: 1; }
+  .achievement-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .achievement-desc {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    line-height: 1.4;
+    margin-top: 2px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    nav { gap: 0.75rem; padding: 0.5rem; }
+    nav a { font-size: 0.65rem; }
+    section { padding: 4rem 1rem 2rem; }
+    h2 { font-size: 1.5rem; }
+    .sprite-2x { transform: scale(1.5); margin: 20px; }
+    .spirit-row { gap: 1rem; }
+    .deck-slot { width: 56px; height: 56px; }
+    .deck-slot .sprite { transform: scale(0.65); }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#overview">Overview</a>
+  <a href="#combat">Combat</a>
+  <a href="#spirits">Spirits</a>
+  <a href="#world">World</a>
+  <a href="#quests">Quests</a>
+  <a href="#leaderboard">Leaderboard</a>
+  <a href="#shop">Shop</a>
+  <a href="#achievements">Achievements</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <h1>Dust 2 Dust</h1>
+    <p class="tagline">A fully on-chain deck-building dungeon crawler</p>
+    <p class="subtitle">Collect spirit abilities, forge your deck, and battle through
+    dangerous dungeons &mdash; all secured by zero-knowledge proofs.</p>
+    <div class="midnight-badge">Built on <span>Midnight Network</span> &mdash; a ZK-powered blockchain</div>
+  </div>
+  <div class="scroll-hint">
+    <img src="arrow.png" alt="scroll">
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <h2>The Game</h2>
+  <div class="card card-glow">
+    <p>
+      In <strong>Dust 2 Dust</strong>, you are a spirit summoner venturing into
+      mysterious and perilous lands. Your weapons are <em>spirits</em> &mdash;
+      magical orbs that channel elemental attacks, shields, and healing energy.
+    </p>
+    <p>
+      Build a powerful deck of spirits, master elemental synergies, and push deeper
+      into increasingly dangerous territory. Every action you take is verified
+      on-chain, making your progress permanent and provably fair.
+    </p>
+  </div>
+
+  <div class="flow">
+    <a class="flow-step flow-link" href="#world">Explore Dungeons</a>
+    <img class="flow-arrow" src="arrow.png" alt="arrow">
+    <a class="flow-step flow-link" href="#combat">Battle Enemies</a>
+    <img class="flow-arrow" src="arrow.png" alt="arrow">
+    <a class="flow-step flow-link" href="#spirits">Earn Spirits</a>
+    <img class="flow-arrow" src="arrow.png" alt="arrow">
+    <a class="flow-step flow-link" href="#shop">Upgrade &amp; Build</a>
+    <img class="flow-arrow" src="arrow.png" alt="arrow">
+    <a class="flow-step flow-link" href="#quests">Challenge Bosses</a>
+  </div>
+</section>
+
+<!-- COMBAT -->
+<section id="combat">
+  <h2>Combat</h2>
+
+  <div class="card">
+    <h3>Your Deck</h3>
+    <p>
+      Before each battle, you choose <strong>7 spirits</strong> from your collection
+      to bring into combat. Each round, <strong>3 of your 7 spirits</strong> are
+      drawn &mdash; the selection rotates every turn, so plan your deck carefully.
+    </p>
+
+    <!-- Deck slot visual -->
+    <div class="deck-visual">
+      <div>
+        <div class="deck-slot filled active"><span class="sprite spirit-fire"></span></div>
+        <div class="round-label"><span class="round-dot"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled active"><span class="sprite spirit-phys"></span></div>
+        <div class="round-label"><span class="round-dot"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled active"><span class="sprite spirit-def"></span></div>
+        <div class="round-label"><span class="round-dot"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled"><span class="sprite spirit-ice"></span></div>
+        <div class="round-label"><span class="round-dot dim"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled"><span class="sprite spirit-phys"></span></div>
+        <div class="round-label"><span class="round-dot dim"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled"><span class="sprite spirit-fire"></span></div>
+        <div class="round-label"><span class="round-dot dim"></span></div>
+      </div>
+      <div>
+        <div class="deck-slot filled"><span class="sprite spirit-def"></span></div>
+        <div class="round-label"><span class="round-dot dim"></span></div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:0.85rem; color:var(--text-dim);">
+      Each round, 3 spirits are drawn (highlighted). The rest wait for future rounds.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Battle Rounds</h3>
+    <p>Each round follows this sequence:</p>
+    <ol style="padding-left: 1.5rem; margin-bottom: 1rem;">
+      <li><strong>Draw spirits</strong> &mdash; 3 of your 7 spirits become available</li>
+      <li><strong>Choose targets</strong> &mdash; assign each spirit to an enemy (or all enemies)</li>
+      <li><strong>Abilities resolve</strong> &mdash; your spirits deal damage, block, or heal</li>
+      <li><strong>Energy combos trigger</strong> &mdash; matching energy colors unlock bonus effects</li>
+      <li><strong>Enemies fight back</strong> &mdash; they attack, block, and heal</li>
+    </ol>
+    <p>
+      Defeat all enemies before your health reaches zero. Damage accumulates across rounds,
+      so use your block and heal spirits wisely.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Damage Types &amp; Effectiveness</h3>
+    <p>
+      There are three attack elements. Each enemy has different resistances &mdash;
+      choosing the right element is key to dealing maximum damage.
+    </p>
+
+    <div class="icon-grid">
+      <div class="icon-item">
+        <img class="icon" src="physical.png" alt="Physical">
+        <span style="color:var(--phys)"><strong>Physical</strong> &mdash; raw force</span>
+      </div>
+      <div class="icon-item">
+        <img class="icon" src="fire.png" alt="Fire">
+        <span style="color:var(--fire)"><strong>Fire</strong> &mdash; burning heat</span>
+      </div>
+      <div class="icon-item">
+        <img class="icon" src="ice.png" alt="Ice">
+        <span style="color:var(--ice)"><strong>Ice</strong> &mdash; freezing cold</span>
+      </div>
+    </div>
+
+    <table class="eff-table">
+      <thead>
+        <tr>
+          <th>Effectiveness</th>
+          <th>Damage</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="eff-super">Super Effective</td>
+          <td class="eff-super">150%</td>
+          <td>The enemy is highly vulnerable</td>
+        </tr>
+        <tr>
+          <td class="eff-effective">Effective</td>
+          <td class="eff-effective">100%</td>
+          <td>Full damage</td>
+        </tr>
+        <tr>
+          <td class="eff-neutral">Neutral</td>
+          <td class="eff-neutral">80%</td>
+          <td>Partially resisted</td>
+        </tr>
+        <tr>
+          <td class="eff-weak">Weak</td>
+          <td class="eff-weak">50%</td>
+          <td>The enemy resists this element</td>
+        </tr>
+        <tr>
+          <td class="eff-immune">Immune</td>
+          <td class="eff-immune">0%</td>
+          <td>No damage at all</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.9rem; color:var(--text-dim);">
+      Pay attention to enemy weaknesses &mdash; the wrong element can mean zero damage.
+    </p>
+  </div>
+</section>
+
+<!-- SPIRITS & ABILITIES -->
+<section id="spirits">
+  <h2>Spirits &amp; Abilities</h2>
+
+  <div class="spirit-row">
+    <div class="spirit-card">
+      <div class="sprite spirit-fire sprite-2x"></div>
+      <div class="label fire">Fire Spirit</div>
+    </div>
+    <div class="spirit-card">
+      <div class="sprite spirit-ice sprite-2x"></div>
+      <div class="label ice">Ice Spirit</div>
+    </div>
+    <div class="spirit-card">
+      <div class="sprite spirit-phys sprite-2x"></div>
+      <div class="label phys">Physical Spirit</div>
+    </div>
+    <div class="spirit-card">
+      <div class="sprite spirit-def sprite-2x"></div>
+      <div class="label def">Guardian Spirit</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Ability Types</h3>
+    <div class="icon-grid">
+      <div class="icon-item">
+        <img class="icon" src="fire.png" alt="Attack">
+        <span><strong>Attack</strong> &mdash; Deal elemental damage to enemies</span>
+      </div>
+      <div class="icon-item">
+        <img class="icon" src="block.png" alt="Block">
+        <span><strong>Block</strong> &mdash; Absorb incoming damage</span>
+      </div>
+      <div class="icon-item">
+        <img class="icon" src="heal.png" alt="Heal">
+        <span><strong>Heal</strong> &mdash; Recover lost health</span>
+      </div>
+      <div class="icon-item">
+        <img class="icon" src="aoe.png" alt="AOE">
+        <span><strong>AOE</strong> &mdash; Hit all enemies at once</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>
+      <img class="icon-sm" src="energy-icon.png" alt="Energy" style="filter: brightness(2);">
+      Energy Combos
+    </h3>
+    <p>
+      Some spirits generate <strong>colored energy</strong> when used. If another spirit
+      in the same round shares that energy color, a <strong>bonus effect triggers</strong>
+      &mdash; extra damage, additional healing, or stronger shields.
+    </p>
+    <p>
+      Building a deck with matching energy colors creates powerful synergies that can
+      turn the tide of battle.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>
+      <img class="icon-sm" src="upgrade-star.png" alt="Upgrade" style="filter: brightness(2); margin-right: 4px;">
+      Upgrades
+    </h3>
+    <p>
+      Spirits can be upgraded up to <strong>3 times</strong>. Each upgrade boosts the
+      spirit's power by <strong>30%</strong>. To upgrade, you sacrifice another spirit
+      and pay a gold cost.
+    </p>
+
+    <div class="upgrade-demo">
+      <div class="spirit-card">
+        <div class="sprite spirit-fire" style="transform:scale(1.3);margin:12px;"></div>
+        <div class="upgrade-stars">
+          <img src="upgrade-star.png" alt="star">
+          <img src="upgrade-star-slot.png" alt="empty">
+          <img src="upgrade-star-slot.png" alt="empty">
+        </div>
+      </div>
+      <span class="upgrade-plus">+</span>
+      <div class="spirit-card">
+        <div class="sprite spirit-phys" style="transform:scale(1.3);margin:12px;opacity:0.5;"></div>
+        <span style="font-size:0.8rem; color:var(--text-dim);">Sacrifice</span>
+      </div>
+      <span class="upgrade-equals">=</span>
+      <div class="spirit-card">
+        <div class="sprite spirit-fire" style="transform:scale(1.5);margin:16px;"></div>
+        <div class="upgrade-stars">
+          <img src="upgrade-star.png" alt="star">
+          <img src="upgrade-star.png" alt="star">
+          <img src="upgrade-star-slot.png" alt="empty">
+        </div>
+      </div>
+    </div>
+    <p style="text-align:center; font-size:0.85rem; color:var(--text-dim);">
+      Sacrifice a spirit + gold to upgrade another. Max 3 stars.
+    </p>
+  </div>
+</section>
+
+<!-- WORLD -->
+<section id="world">
+  <h2>Explore the World</h2>
+
+  <div class="card">
+    <p>
+      Journey through <strong>diverse biomes</strong>, each with its own
+      environment, enemies, and challenges. Every region holds three tiers
+      of difficulty &mdash; conquer one to unlock the next.
+    </p>
+  </div>
+
+  <div class="biome-strip">
+    <div class="biome-card">
+      <img src="bg-grass.png" alt="Verdant lands">
+      <div class="biome-label">? ? ?</div>
+    </div>
+    <div class="biome-card">
+      <img src="bg-desert.png" alt="Scorching sands">
+      <div class="biome-label">? ? ?</div>
+    </div>
+    <div class="biome-card">
+      <img src="bg-tundra.png" alt="Frozen wastes">
+      <div class="biome-label">? ? ?</div>
+    </div>
+    <div class="biome-card">
+      <img src="bg-cave.png" alt="Dark depths">
+      <div class="biome-label">? ? ?</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Difficulty Tiers</h3>
+    <div class="flow">
+      <div class="flow-step" style="border-color: #50c070;">
+        <img class="icon-sm" src="hp-bar-shield.png" alt="" style="margin-right:4px;">
+        Tier 1 &mdash; Frontier
+      </div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step" style="border-color: var(--gold);">
+        <img class="icon-sm" src="hp-bar-shield.png" alt="" style="margin-right:4px;">
+        Tier 2 &mdash; Interior
+      </div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step" style="border-color: var(--fire);">
+        <img class="icon-sm" src="hp-bar-shield.png" alt="" style="margin-right:4px;">
+        Tier 3 &mdash; Stronghold
+      </div>
+    </div>
+    <p style="text-align:center; font-size:0.9rem; color:var(--text-dim);">
+      Each tier is locked until you defeat the boss of the previous tier.
+    </p>
+  </div>
+</section>
+
+<!-- QUESTS -->
+<section id="quests" class="section-highlight">
+  <div class="highlight-banner">Your Main Goal</div>
+  <h2>Quests &amp; Bosses</h2>
+
+  <div class="card card-glow highlight-card">
+    <p style="font-size: 1.15rem; color: var(--text-bright);">
+      <strong>Quests are the heart of Dust 2 Dust.</strong> This is how you progress
+      through the game, unlock new regions, and face the most powerful enemies.
+    </p>
+  </div>
+
+  <div class="card card-glow">
+    <h3>How Quests Work</h3>
+    <p>
+      Unlike regular battles, quests are <strong>asynchronous expeditions</strong> that
+      culminate in a <strong>boss encounter</strong>. Send your spirits out, and return
+      when they're ready.
+    </p>
+
+    <div class="flow" style="margin: 2rem 0;">
+      <div class="flow-step highlight-step">Pick a Region</div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step highlight-step">Choose 7 Spirits</div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step highlight-step">Send on Quest</div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step highlight-step">Wait...</div>
+      <img class="flow-arrow" src="arrow.png" alt="arrow">
+      <div class="flow-step highlight-step">Fight the Boss</div>
+    </div>
+
+    <p>
+      After sending your spirits on a quest, you can continue battling or managing
+      your collection. When the quest timer completes, return to <strong>finalize</strong>
+      the quest and face the region's boss.
+    </p>
+  </div>
+
+  <div class="card card-glow highlight-card" style="border-left: 4px solid var(--gold); padding-left: 1.8rem;">
+    <h3 style="color: var(--gold); font-size: 1.3rem;">Why Quests Matter</h3>
+    <p style="font-size: 1.05rem; color: var(--text-bright);">
+      <strong>Defeating a boss unlocks the next difficulty tier</strong> for that region,
+      bringing tougher enemies &mdash; and better rewards. To reach the endgame, you must
+      conquer every region at every difficulty.
+    </p>
+    <p style="font-size: 1.05rem; color: var(--text-bright);">
+      Regular battles are great for farming gold and spirits, but <strong>only quests
+      advance your progression</strong>. Build your deck through battles, then put it to
+      the ultimate test against a boss.
+    </p>
+  </div>
+</section>
+
+<!-- LEADERBOARD -->
+<section id="leaderboard">
+  <h2>Leaderboard &amp; Boss Points</h2>
+
+  <div class="card card-glow">
+    <p style="font-size: 1.1rem; color: var(--text-bright);">
+      Every boss you defeat earns <strong>Boss Points</strong> that place you on the
+      global leaderboard. Harder biomes and higher difficulty tiers award more points
+      &mdash; push deeper to climb the ranks.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>How Points Are Calculated</h3>
+    <p>
+      When you defeat a boss at the end of a quest, your score is determined by
+      two factors: <strong>which biome</strong> the boss is in and <strong>which
+      difficulty tier</strong> you cleared.
+    </p>
+    <p style="text-align:center; font-size: 1.05rem; color: var(--gold); font-family: 'Cinzel', serif; margin: 1.5rem 0;">
+      Points &nbsp;=&nbsp; Biome Base &nbsp;&times;&nbsp; Difficulty Tier
+    </p>
+
+    <table class="eff-table" style="margin: 1.5rem 0;">
+      <thead>
+        <tr>
+          <th>Biome</th>
+          <th>Base Points</th>
+          <th>Tier 1 (Frontier)</th>
+          <th>Tier 2 (Interior)</th>
+          <th>Tier 3 (Stronghold)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color: var(--heal-green);">Grasslands</td>
+          <td>10</td>
+          <td>10</td>
+          <td>20</td>
+          <td>30</td>
+        </tr>
+        <tr>
+          <td style="color: var(--fire);">Scorched Desert</td>
+          <td>20</td>
+          <td>20</td>
+          <td>40</td>
+          <td>60</td>
+        </tr>
+        <tr>
+          <td style="color: var(--ice);">Frozen Tundra</td>
+          <td>30</td>
+          <td>30</td>
+          <td>60</td>
+          <td>90</td>
+        </tr>
+        <tr>
+          <td style="color: #b080d0;">Goblin Caves</td>
+          <td>50</td>
+          <td>50</td>
+          <td>100</td>
+          <td style="color: var(--gold); font-weight: 600;">150</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.9rem; color:var(--text-dim); text-align:center;">
+      Only boss victories count &mdash; regular battles do not award leaderboard points.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>Climbing the Leaderboard</h3>
+    <p>
+      Your total score is the <strong>sum of all boss points</strong> you have earned.
+      Defeating the same boss at a higher tier is the fastest way to gain
+      points. A single Goblin Caves Stronghold victory is worth
+      <strong>150 points</strong> &mdash; fifteen times more than a Grasslands
+      Frontier clear.
+    </p>
+    <p>
+      Check the leaderboard any time from the <strong>footer link</strong> at the bottom
+      of the game screen to see where you stand.
+    </p>
+  </div>
+</section>
+
+<!-- SHOP -->
+<section id="shop">
+  <h2>The Shop</h2>
+
+  <div class="shop-bg">
+    <div class="card" style="background: rgba(21,21,40,0.85);">
+      <h3>Upgrade Spirits</h3>
+      <p>
+        Sacrifice one spirit and pay gold to empower another.
+        Each upgrade level adds <strong>30% more power</strong>. A fully upgraded
+        spirit with 3 stars is a formidable force.
+      </p>
+
+      <h3>Sell Spirits</h3>
+      <p>
+        Unwanted spirits can be sold for gold. Stronger spirits
+        are worth more &mdash; use this to fund your upgrades.
+      </p>
+
+      <h3>Gold Economy</h3>
+      <p>
+        Gold is earned from battles and selling spirits.
+        Spend it wisely &mdash; the difference between victory and defeat
+        often comes down to a well-timed upgrade.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!--
+<section id="achievements">
+  <h2>Achievements</h2>
+
+  <div class="card" style="text-align:center; margin-bottom: 2rem;">
+    <p>
+      Track your progress and prove your mastery. Achievements are earned
+      automatically as you play &mdash; can you unlock them all?
+    </p>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Quest Completion</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/first-quest.png" alt="First Quest"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">First Quest</div>
+          <div class="achievement-desc">Complete your first quest and defeat a boss</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/novice-explorer.png" alt="Novice Explorer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Novice Explorer</div>
+          <div class="achievement-desc">Complete 5 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/seasoned-adventurer.png" alt="Seasoned Adventurer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Seasoned Adventurer</div>
+          <div class="achievement-desc">Complete 10 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/experienced-adventurer.png" alt="Experienced Adventurer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Experienced Adventurer</div>
+          <div class="achievement-desc">Complete 15 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/skilled-explorer.png" alt="Skilled Explorer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Skilled Explorer</div>
+          <div class="achievement-desc">Complete 20 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/expert-explorer.png" alt="Expert Explorer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Expert Explorer</div>
+          <div class="achievement-desc">Complete 25 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/veteran-explorer.png" alt="Veteran Explorer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Veteran Explorer</div>
+          <div class="achievement-desc">Complete 30 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/quest-master.png" alt="Quest Master"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Quest Master</div>
+          <div class="achievement-desc">Complete 50 quests</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/legendary-explorer.png" alt="Legendary Explorer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Legendary Explorer</div>
+          <div class="achievement-desc">Complete 100 quests</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Biome Mastery</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/grasslands-conqueror.png" alt="Grasslands Conqueror"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Grasslands Conqueror</div>
+          <div class="achievement-desc">Defeat the Grasslands boss at all 3 difficulties</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/desert-conqueror.png" alt="Desert Conqueror"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Desert Conqueror</div>
+          <div class="achievement-desc">Defeat the Scorched Desert boss at all 3 difficulties</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/tundra-conqueror.png" alt="Tundra Conqueror"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Tundra Conqueror</div>
+          <div class="achievement-desc">Defeat the Frozen Tundra boss at all 3 difficulties</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/cave-conqueror.png" alt="Cave Conqueror"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Cave Conqueror</div>
+          <div class="achievement-desc">Defeat the Goblin Caves boss at all 3 difficulties</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/world-conqueror.png" alt="World Conqueror"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">World Conqueror</div>
+          <div class="achievement-desc">Defeat all bosses in every biome at every difficulty</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Difficulty Progression</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/frontier-scout.png" alt="Frontier Scout"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Frontier Scout</div>
+          <div class="achievement-desc">Defeat any Frontier (difficulty 1) boss</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/interior-breacher.png" alt="Interior Breacher"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Interior Breacher</div>
+          <div class="achievement-desc">Defeat any Interior (difficulty 2) boss</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/stronghold-crusher.png" alt="Stronghold Crusher"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Stronghold Crusher</div>
+          <div class="achievement-desc">Defeat any Stronghold (difficulty 3) boss</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Boss Combat</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/flawless-victory.png" alt="Flawless Victory"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Flawless Victory</div>
+          <div class="achievement-desc">Defeat a boss without taking any damage</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/close-call.png" alt="Close Call"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Close Call</div>
+          <div class="achievement-desc">Defeat a boss with 90+ damage taken</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/no-retreat.png" alt="No Retreat"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">No Retreat</div>
+          <div class="achievement-desc">Defeat 10 bosses in a row without retreating</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Multi-Quest</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/multitasker.png" alt="Multitasker"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Multitasker</div>
+          <div class="achievement-desc">Have 3 quests active simultaneously (max capacity)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Losses &amp; Resilience</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/fallen-hero.png" alt="Fallen Hero"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Fallen Hero</div>
+          <div class="achievement-desc">Lose a boss fight (and your abilities with it)</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/persistence.png" alt="Persistence"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Persistence</div>
+          <div class="achievement-desc">Lose a boss fight, then defeat the same boss later</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/tactical-retreat.png" alt="Tactical Retreat"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Tactical Retreat</div>
+          <div class="achievement-desc">Retreat from a boss fight to save your abilities</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Battle Milestones</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/first-blood.png" alt="First Blood"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">First Blood</div>
+          <div class="achievement-desc">Win your first battle</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/battle-hardened.png" alt="Battle Hardened"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Battle Hardened</div>
+          <div class="achievement-desc">Win 50 battles</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/warmonger.png" alt="Warmonger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Warmonger</div>
+          <div class="achievement-desc">Win 100 battles</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/grizzled-veteran.png" alt="Grizzled Veteran"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Grizzled Veteran</div>
+          <div class="achievement-desc">Win 250 battles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Battle Feats</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/speed-demon.png" alt="Speed Demon"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Speed Demon</div>
+          <div class="achievement-desc">Win a battle in a single round</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/marathon-fight.png" alt="Marathon Fight"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Marathon Fight</div>
+          <div class="achievement-desc">Win a battle that lasted 10+ rounds</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/untouchable.png" alt="Untouchable"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Untouchable</div>
+          <div class="achievement-desc">Win a 3-enemy battle taking 0 damage</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/survivor.png" alt="Survivor"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Survivor</div>
+          <div class="achievement-desc">Win a battle with 95+ damage taken</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Combat Totals</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/slayer.png" alt="Slayer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Slayer</div>
+          <div class="achievement-desc">Defeat 100 enemies total</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/annihilator.png" alt="Annihilator"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Annihilator</div>
+          <div class="achievement-desc">Defeat 500 enemies total</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/round-veteran.png" alt="Round Veteran"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Round Veteran</div>
+          <div class="achievement-desc">Play 500 combat rounds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Spirit Collection</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/spirit-collector.png" alt="Spirit Collector"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Spirit Collector</div>
+          <div class="achievement-desc">Own 25 spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/spirit-hoarder.png" alt="Spirit Hoarder"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Spirit Hoarder</div>
+          <div class="achievement-desc">Own 50 spirits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Deck Building</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/mono-fire.png" alt="Mono Fire"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Mono Fire</div>
+          <div class="achievement-desc">Win a battle with only fire-attack spirits in your loadout</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/mono-ice.png" alt="Mono Ice"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Mono Ice</div>
+          <div class="achievement-desc">Win a battle with only ice-attack spirits in your loadout</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/glass-cannon.png" alt="Glass Cannon"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Glass Cannon</div>
+          <div class="achievement-desc">Win a battle with no block or heal spirits in your loadout</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/mono-physical.png" alt="Mono Physical"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Mono Physical</div>
+          <div class="achievement-desc">Win a battle with only physical-attack spirits in your loadout</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Upgrade Milestones</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/apprentice-smith.png" alt="Apprentice Smith"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Apprentice Smith</div>
+          <div class="achievement-desc">Upgrade a spirit for the first time</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/journeyman-smith.png" alt="Journeyman Smith"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Journeyman Smith</div>
+          <div class="achievement-desc">Upgrade 10 spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/master-smith.png" alt="Master Smith"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Master Smith</div>
+          <div class="achievement-desc">Upgrade 25 spirits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Upgrade by Type</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/pyro-forger.png" alt="Pyro Forger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Pyro Forger</div>
+          <div class="achievement-desc">Upgrade 10 fire-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/cryo-forger.png" alt="Cryo Forger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Cryo Forger</div>
+          <div class="achievement-desc">Upgrade 10 ice-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/weapons-forger.png" alt="Weapons Forger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Weapons Forger</div>
+          <div class="achievement-desc">Upgrade 10 physical-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/shield-forger.png" alt="Shield Forger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Shield Forger</div>
+          <div class="achievement-desc">Upgrade 10 block spirits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Upgrade Quality</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/rising-star.png" alt="Rising Star"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Rising Star</div>
+          <div class="achievement-desc">Own a spirit at 2 stars</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/perfection.png" alt="Perfection"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Perfection</div>
+          <div class="achievement-desc">Own a spirit at 3 stars (max)</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/master-forger.png" alt="Master Forger"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Master Forger</div>
+          <div class="achievement-desc">Own 3 fully upgraded (3-star) spirits simultaneously</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/max-power.png" alt="Max Power"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Max Power</div>
+          <div class="achievement-desc">Own a 3-star spirit of every element (Fire, Ice, Physical)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Gold Milestones</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/first-coin.png" alt="First Coin"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">First Coin</div>
+          <div class="achievement-desc">Earn your first gold</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/treasure-hunter.png" alt="Treasure Hunter"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Treasure Hunter</div>
+          <div class="achievement-desc">Earn 500 gold total</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/golden-hoard.png" alt="Golden Hoard"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Golden Hoard</div>
+          <div class="achievement-desc">Earn 2000 gold total</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/dragons-vault.png" alt="Dragon's Vault"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Dragon's Vault</div>
+          <div class="achievement-desc">Earn 10000 gold total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Spending</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/big-spender.png" alt="Big Spender"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Big Spender</div>
+          <div class="achievement-desc">Spend 1000 gold total</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Selling</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/merchant.png" alt="Merchant"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Merchant</div>
+          <div class="achievement-desc">Sell 10 spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/spirit-trader.png" alt="Spirit Trader"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Spirit Trader</div>
+          <div class="achievement-desc">Sell 50 spirits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Selling by Type</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/fire-sale.png" alt="Fire Sale"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Fire Sale</div>
+          <div class="achievement-desc">Sell 15 fire-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/cold-surplus.png" alt="Cold Surplus"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Cold Surplus</div>
+          <div class="achievement-desc">Sell 15 ice-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/disarmed.png" alt="Disarmed"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Disarmed</div>
+          <div class="achievement-desc">Sell 15 physical-attack spirits</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/shields-down.png" alt="Shields Down"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Shields Down</div>
+          <div class="achievement-desc">Sell 15 block spirits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Elemental Mastery</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/balanced-fighter.png" alt="Balanced Fighter"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Balanced Fighter</div>
+          <div class="achievement-desc">Win a battle with all 3 attack elements in your loadout (Physical, Fire, and Ice)</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/elemental-focus.png" alt="Elemental Focus"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Elemental Focus</div>
+          <div class="achievement-desc">Win a battle where every attack ability in your loadout shares the same element</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/full-spectrum.png" alt="Full Spectrum"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Full Spectrum</div>
+          <div class="achievement-desc">Own an upgraded (1+ star) ability of every effect type</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Energy Synergy</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/energy-specialist.png" alt="Energy Specialist"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Energy Specialist</div>
+          <div class="achievement-desc">Own 3+ abilities that generate the same energy color</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/overcharged.png" alt="Overcharged"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Overcharged</div>
+          <div class="achievement-desc">Win a battle with 3+ loadout abilities sharing the same energy color</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Damage Output</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/damage-dealer.png" alt="Damage Dealer"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Damage Dealer</div>
+          <div class="achievement-desc">Deal 300+ total damage to enemies in a single battle</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/overwhelming-force.png" alt="Overwhelming Force"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Overwhelming Force</div>
+          <div class="achievement-desc">Deal 600+ total damage to enemies in a single battle</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/devastator.png" alt="Devastator"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Devastator</div>
+          <div class="achievement-desc">Deal 10000 total damage across all battles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievement-category">
+    <h3>Loadout Mastery</h3>
+    <div class="achievement-list">
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/fortified.png" alt="Fortified"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Fortified</div>
+          <div class="achievement-desc">Win a battle with 3+ block abilities in your loadout</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/aoe-arsenal.png" alt="AOE Arsenal"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">AOE Arsenal</div>
+          <div class="achievement-desc">Own 3+ abilities with AOE effects</div>
+        </div>
+      </div>
+      <div class="achievement">
+        <div class="achievement-icon"><img src="achievements/power-surge.png" alt="Power Surge"></div>
+        <div class="achievement-info">
+          <div class="achievement-name">Power Surge</div>
+          <div class="achievement-desc">Win a battle with a fully upgraded (3-star) ability in your loadout</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Begin Your Journey</h2>
+  <p>
+    The dungeons await. Gather your spirits, forge your strategy,
+    and prove your worth on-chain.
+  </p>
+  <div class="spirit-row" style="margin-top: 1rem;">
+    <div class="sprite spirit-phys sprite-2x"></div>
+    <div class="sprite spirit-fire sprite-2x"></div>
+    <div class="sprite spirit-def sprite-2x"></div>
+    <div class="sprite spirit-ice sprite-2x"></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Dust 2 Dust &mdash; Built on
+    <a href="https://midnight.network" target="_blank" rel="noopener">Midnight Network</a>
+  </p>
+</footer>
+
+</body>
+</html>

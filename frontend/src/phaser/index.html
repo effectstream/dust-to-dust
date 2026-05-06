@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dust 2 Dust</title>
+    <style media='screen' type='text/css'>
+      @font-face {
+        font-family: yana;
+        src: url('public/yana.ttf');
+        font-weight:400;
+        font-weight:normal;
+      }
+
+      /* ── Footer & overlay styles ── */
+      .d2d-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+        display: flex; align-items: center; justify-content: center; z-index: 9999;
+      }
+      .d2d-overlay-box {
+        position: relative; min-width: 300px; max-width: 500px; padding: 24px;
+        background: #1a1a0e; border: 2px solid #3a3a20; border-radius: 6px;
+        color: #f5f5ed; font-family: yana, sans-serif; text-align: center;
+      }
+      .d2d-overlay-close {
+        position: absolute; top: 6px; right: 8px;
+        background: #1a1a0e; border: 1px solid #aabb44; border-radius: 3px;
+        color: #f5f5ed; font-family: monospace; font-size: 14px;
+        width: 24px; height: 24px; cursor: pointer; z-index: 1;
+        line-height: 1; padding: 0;
+      }
+      .d2d-popup-title { font-size: 30px; margin: 0 0 20px; color: #f5f5ed; }
+      .d2d-popup-desc { font-size: 18px; margin: 0 0 24px; color: #bbbbaa; line-height: 1.5; }
+      .d2d-btn-primary {
+        display: block; padding: 14px 28px; margin: 0 0 14px;
+        background: #aabb44; color: #1a1a0e;
+        border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 22px;
+      }
+      .d2d-btn-outline {
+        display: block; padding: 14px 28px;
+        background: transparent; color: #aabb44;
+        border: 1px solid #aabb44; border-radius: 4px;
+        text-decoration: none; font-weight: bold; font-size: 22px;
+      }
+      .d2d-footer-link {
+        font-family: yana, sans-serif; font-size: 24px;
+        color: #c0c2d8; text-decoration: none; letter-spacing: 0.5px;
+        transition: color 0.2s, text-shadow 0.2s;
+        cursor: pointer;
+        text-shadow: 0 0 4px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.6);
+      }
+      .d2d-footer-link:hover {
+        color: #aabb44;
+        text-shadow: 0 0 8px rgba(170,187,68,0.4), 0 0 4px rgba(0,0,0,0.6);
+      }
+      /* Delegation popup styles */
+      .d2d-popup-body { font-size: 22px; margin: 8px 0; color: #bbbbaa; }
+      .d2d-popup-accent { color: #aabb44; font-size: 20px; word-break: break-all; }
+      .d2d-popup-error { color: #cc6666; font-size: 22px; margin: 12px 0; }
+      .d2d-popup-muted { color: #777766; font-size: 20px; font-style: italic; }
+
+      /* ── Achievements overlay ── */
+      .d2d-overlay-box--wide {
+        width: 820px; max-width: 95vw; height: 600px; max-height: 85vh;
+        padding: 0; overflow: hidden; text-align: left;
+      }
+      .d2d-ach-wrap {
+        width: 100%; height: 100%; display: flex; flex-direction: column;
+      }
+      .d2d-ach-header {
+        padding: 18px 24px 12px; border-bottom: 1px solid #3a3a20;
+      }
+      .d2d-ach-header h2 { margin: 0; font-size: 36px; color: #f5f5ed; }
+      .d2d-ach-header p { margin: 4px 0 0; font-size: 20px; color: #999988; }
+      .d2d-addr-info { margin: 8px 0 0; font-size: 13px; color: #777766; line-height: 1.6; }
+      .d2d-addr-info span { color: #aabb44; font-family: monospace; font-size: 12px; word-break: break-all; }
+      .d2d-ach-body {
+        flex: 1; overflow-y: auto; padding: 16px 24px;
+      }
+      .d2d-ach-category-title {
+        font-size: 22px; color: #aabb44; margin: 18px 0 10px; padding-bottom: 4px;
+        border-bottom: 1px solid #3a3a20; text-transform: capitalize;
+      }
+      .d2d-ach-category-title:first-child { margin-top: 0; }
+      .d2d-ach-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px;
+      }
+      .d2d-ach-card {
+        display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+        border: 1px solid #2a2a18; border-radius: 4px; background: #141409;
+      }
+      .d2d-ach-card.unlocked { border-color: #aabb44; background: rgba(170,187,68,0.06); }
+      .d2d-ach-icon {
+        width: 48px; height: 48px; flex-shrink: 0;
+        image-rendering: pixelated; border-radius: 3px;
+      }
+      .d2d-ach-card:not(.unlocked) .d2d-ach-icon {
+        filter: grayscale(1) contrast(0.6) brightness(0.5);
+      }
+      .d2d-ach-info { min-width: 0; }
+      .d2d-ach-name { font-size: 16px; color: #f5f5ed; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .d2d-ach-card.unlocked .d2d-ach-name { color: #aabb44; }
+      .d2d-ach-desc { font-size: 13px; color: #777766; margin: 2px 0 0; line-height: 1.3; }
+      .d2d-ach-loading { text-align: center; padding: 40px; color: #999988; font-size: 22px; }
+
+      /* ── Leaderboard overlay ── */
+      .d2d-lb-wrap { width: 100%; height: 100%; display: flex; flex-direction: column; }
+      .d2d-lb-header { padding: 18px 24px 12px; border-bottom: 1px solid #3a3a20; }
+      .d2d-lb-header h2 { margin: 0; font-size: 36px; color: #f5f5ed; }
+      .d2d-lb-header p { margin: 4px 0 0; font-size: 20px; color: #999988; }
+      .d2d-lb-channels { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+      .d2d-lb-ch-btn {
+        background: #141409; border: 1px solid #3a3a20; border-radius: 4px;
+        color: #999988; font-family: yana, sans-serif; font-size: 16px;
+        padding: 4px 14px; cursor: pointer;
+      }
+      .d2d-lb-ch-btn.active { border-color: #aabb44; color: #aabb44; background: rgba(170,187,68,0.1); }
+      .d2d-lb-body { flex: 1; overflow-y: auto; padding: 16px 24px; }
+      .d2d-lb-table { width: 100%; border-collapse: collapse; }
+      .d2d-lb-table th {
+        text-align: left; font-size: 14px; color: #777766; padding: 6px 10px;
+        border-bottom: 1px solid #3a3a20; text-transform: uppercase; letter-spacing: 0.5px;
+      }
+      .d2d-lb-table th:first-child { text-align: center; width: 50px; }
+      .d2d-lb-table th:last-child { text-align: right; }
+      .d2d-lb-table td { padding: 10px; font-size: 18px; color: #f5f5ed; border-bottom: 1px solid #1e1e14; }
+      .d2d-lb-rank { text-align: center; width: 50px; color: #999988; font-size: 20px; }
+      .d2d-lb-rank-1 { color: #ffd700; }
+      .d2d-lb-rank-2 { color: #c0c0c0; }
+      .d2d-lb-rank-3 { color: #cd7f32; }
+      .d2d-lb-addr { color: #777766; font-size: 13px; font-family: monospace; }
+      .d2d-lb-score { text-align: right; color: #aabb44; font-size: 20px; }
+      .d2d-lb-me { background: rgba(170,187,68,0.08); }
+      .d2d-lb-loading { text-align: center; padding: 40px; color: #999988; font-size: 22px; }
+
+      /* ── How to Play overlay ── */
+      .d2d-overlay-box--htp {
+        width: 900px; max-width: 95vw; height: 85vh;
+        padding: 36px 0 0 0; overflow: hidden; text-align: left;
+        box-sizing: border-box;
+      }
+      .d2d-htp-iframe {
+        width: 100%; height: 100%; border: none;
+      }
+
+      /* ── Page background ── */
+      html, body { margin: 0; padding: 0; background: #1f0e1c; transition: background-color 500ms ease; }
+      body { min-height: 100vh; }
+
+      /* ── TX spinner (bottom-right) ── */
+      #d2d-tx-spinner {
+        position: fixed; bottom: 36px; right: 16px; z-index: 9998;
+        display: none; align-items: center; gap: 10px;
+        font-family: yana, sans-serif; color: #e0e0f0; font-size: 28px;
+        max-width: 124px; text-align: right;
+        pointer-events: none;
+        text-shadow: 0 0 6px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8);
+      }
+      #d2d-tx-spinner .spinner-ring {
+        width: 22px; height: 22px;
+        border: 3px solid rgba(0,0,0,0.4);
+        border-top-color: #e0e0f0;
+        border-radius: 50%;
+        animation: d2d-spin 0.8s linear infinite;
+        filter: drop-shadow(0 0 3px rgba(0,0,0,0.7));
+      }
+      @keyframes d2d-spin { to { transform: rotate(360deg); } }
+</style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <div style="font-family:yana; position:absolute; left:-1000px; visibility:hidden;">.</div>
+    <script type="module">
+      // Buffer must be globally available before any CJS module initializes.
+      // We split the entry point so Buffer is set before the app module graph loads.
+      import { Buffer } from 'buffer';
+      globalThis.Buffer = Buffer;
+      await import('/src/main.tsx');
+    </script>
+
+    <div id="d2d-tx-spinner"><div class="spinner-ring"></div><span id="d2d-tx-spinner-text"></span></div>
+
+    <div id="d2d-footer" style="position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-between;padding:8px 16px;z-index:100;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);">
+      <a href="#" id="d2d-htp-link" class="d2d-footer-link">
+        How to Play
+      </a>
+      <a href="#" id="d2d-achievements-link" class="d2d-footer-link">
+        Achievements
+      </a>
+      <a href="#" id="d2d-leaderboard-link" class="d2d-footer-link">
+        Leaderboard
+      </a>
+      <a href="#" id="d2d-about-link" class="d2d-footer-link">
+        Report / About
+      </a>
+      <a href="#" id="d2d-mute-link" class="d2d-footer-link" title="Toggle music">
+        🔊
+      </a>
+    </div>
+
+    <div id="d2d-htp-overlay" class="d2d-overlay" style="display:none;">
+      <div class="d2d-overlay-box d2d-overlay-box--htp">
+        <button id="d2d-htp-close" class="d2d-overlay-close">&#x2715;</button>
+        <iframe id="d2d-htp-iframe" class="d2d-htp-iframe" src="about:blank"></iframe>
+      </div>
+    </div>
+
+    <div id="d2d-ach-overlay" class="d2d-overlay" style="display:none;">
+      <div class="d2d-overlay-box d2d-overlay-box--wide">
+        <button id="d2d-ach-close" class="d2d-overlay-close">&#x2715;</button>
+        <div class="d2d-ach-wrap">
+          <div class="d2d-ach-header">
+            <h2>Achievements</h2>
+            <p id="d2d-ach-counter"></p>
+            <div id="d2d-ach-addr" class="d2d-addr-info"></div>
+          </div>
+          <div id="d2d-ach-body" class="d2d-ach-body">
+            <div class="d2d-ach-loading">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="d2d-lb-overlay" class="d2d-overlay" style="display:none;">
+      <div class="d2d-overlay-box d2d-overlay-box--wide">
+        <button id="d2d-lb-close" class="d2d-overlay-close">&#x2715;</button>
+        <div class="d2d-lb-wrap">
+          <div class="d2d-lb-header">
+            <h2>Leaderboard</h2>
+            <p id="d2d-lb-counter"></p>
+            <div id="d2d-lb-addr" class="d2d-addr-info"></div>
+            <div id="d2d-lb-channels" class="d2d-lb-channels"></div>
+          </div>
+          <div id="d2d-lb-body" class="d2d-lb-body">
+            <div class="d2d-lb-loading">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="d2d-about-overlay" class="d2d-overlay" style="display:none;">
+      <div class="d2d-overlay-box">
+        <button id="d2d-about-close" class="d2d-overlay-close">&#x2715;</button>
+        <p class="d2d-popup-title">Dust 2 Dust</p>
+        <p class="d2d-popup-desc" style="width:400px;">
+          Dust 2 Dust is a fully on-chain deck-building dungeon crawler built on the Midnight Network. All game logic is secured by zero-knowledge proofs.
+        </p>
+        <a href="https://github.com/effectstream/mnf-game-issues/issues" target="_blank" rel="noopener noreferrer"
+           class="d2d-btn-primary">
+          Report Bug
+        </a>
+        <a href="https://github.com/PaimaStudios/midnight-game-2/" target="_blank" rel="noopener noreferrer"
+           class="d2d-btn-outline">
+          Source Code
+        </a>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        // --- How to Play overlay ---
+        var htpLink = document.getElementById('d2d-htp-link');
+        var htpOverlay = document.getElementById('d2d-htp-overlay');
+        var htpClose = document.getElementById('d2d-htp-close');
+        var htpIframe = document.getElementById('d2d-htp-iframe');
+        htpLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          htpIframe.src = 'how-to-play.html';
+          htpOverlay.style.display = 'flex';
+        });
+        htpClose.addEventListener('click', function() {
+          htpOverlay.style.display = 'none';
+          htpIframe.src = 'about:blank';
+        });
+        htpOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (e.target === htpOverlay) {
+            htpOverlay.style.display = 'none';
+            htpIframe.src = 'about:blank';
+          }
+        });
+
+        // --- About overlay ---
+        var link = document.getElementById('d2d-about-link');
+        var overlay = document.getElementById('d2d-about-overlay');
+        var closeBtn = document.getElementById('d2d-about-close');
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          overlay.style.display = 'flex';
+        });
+        closeBtn.addEventListener('click', function() {
+          overlay.style.display = 'none';
+        });
+        overlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (e.target === overlay) overlay.style.display = 'none';
+        });
+
+        // --- Mute toggle ---
+        var muteLink = document.getElementById('d2d-mute-link');
+        var isMuted = false;
+        muteLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          isMuted = !isMuted;
+          var game = window.__phaserGame;
+          if (game && game.sound) {
+            game.sound.mute = isMuted;
+          }
+          muteLink.textContent = isMuted ? '🔇' : '🔊';
+        });
+
+        // --- Address info helper ---
+        function buildAddrHtml() {
+          var gameAddr = window.__d2dPlayerAddress || null;
+          var walletAddr = window.__d2dWalletAddress || null;
+          if (!gameAddr && !walletAddr) return '';
+          var html = '';
+          if (gameAddr) html += 'Game: <span>' + gameAddr + '</span>';
+          if (walletAddr) html += (html ? '<br>' : '') + 'Wallet: <span>' + walletAddr + '</span>';
+          return html;
+        }
+
+        // --- Achievements overlay ---
+        var achLink = document.getElementById('d2d-achievements-link');
+        var achOverlay = document.getElementById('d2d-ach-overlay');
+        var achClose = document.getElementById('d2d-ach-close');
+        var achBody = document.getElementById('d2d-ach-body');
+        var achCounter = document.getElementById('d2d-ach-counter');
+        var achAddr = document.getElementById('d2d-ach-addr');
+
+        function achIconUrl(name) {
+          return 'achievements/' + name.replace(/_/g, '-') + '.png';
+        }
+
+        // Category display order and labels
+        var categoryOrder = ['quest', 'battle', 'spirit_deck', 'upgrade', 'economy', 'combat_mastery'];
+        var categoryLabels = {
+          quest: 'Quests',
+          battle: 'Battle',
+          spirit_deck: 'Spirits & Deck',
+          upgrade: 'Upgrades',
+          economy: 'Economy',
+          combat_mastery: 'Combat Mastery'
+        };
+
+        function renderAchievements(allAchievements, unlockedSet) {
+          var unlocked = 0;
+          var total = allAchievements.length;
+
+          // Group by category
+          var groups = {};
+          for (var i = 0; i < allAchievements.length; i++) {
+            var a = allAchievements[i];
+            var cat = a.category || 'other';
+            if (!groups[cat]) groups[cat] = [];
+            var isUnlocked = unlockedSet.has(a.name);
+            if (isUnlocked) unlocked++;
+            groups[cat].push({ def: a, unlocked: isUnlocked });
+          }
+
+          achCounter.textContent = unlocked + ' / ' + total + ' unlocked';
+
+          var html = '';
+          for (var c = 0; c < categoryOrder.length; c++) {
+            var cat = categoryOrder[c];
+            var items = groups[cat];
+            if (!items || items.length === 0) continue;
+
+            // Sort: unlocked first, then alphabetical
+            items.sort(function(a, b) {
+              if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+              return a.def.displayName.localeCompare(b.def.displayName);
+            });
+
+            html += '<div class="d2d-ach-category-title">' + (categoryLabels[cat] || cat) + '</div>';
+            html += '<div class="d2d-ach-grid">';
+            for (var j = 0; j < items.length; j++) {
+              var item = items[j];
+              html += '<div class="d2d-ach-card' + (item.unlocked ? ' unlocked' : '') + '">' +
+                '<img class="d2d-ach-icon" src="' + achIconUrl(item.def.name) + '" alt="">' +
+                '<div class="d2d-ach-info">' +
+                '<p class="d2d-ach-name">' + item.def.displayName + '</p>' +
+                '<p class="d2d-ach-desc">' + item.def.description + '</p>' +
+                '</div></div>';
+            }
+            html += '</div>';
+          }
+
+          // Any categories not in the predefined order
+          for (var cat in groups) {
+            if (categoryOrder.indexOf(cat) === -1) {
+              var items = groups[cat];
+              items.sort(function(a, b) {
+                if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
+                return a.def.displayName.localeCompare(b.def.displayName);
+              });
+              html += '<div class="d2d-ach-category-title">' + cat + '</div>';
+              html += '<div class="d2d-ach-grid">';
+              for (var j = 0; j < items.length; j++) {
+                var item = items[j];
+                html += '<div class="d2d-ach-card' + (item.unlocked ? ' unlocked' : '') + '">' +
+                  '<img class="d2d-ach-icon" src="' + achIconUrl(item.def.name) + '" alt="">' +
+                  '<div class="d2d-ach-info">' +
+                  '<p class="d2d-ach-name">' + item.def.displayName + '</p>' +
+                  '<p class="d2d-ach-desc">' + item.def.description + '</p>' +
+                  '</div></div>';
+              }
+              html += '</div>';
+            }
+          }
+
+          achBody.innerHTML = html || '<div class="d2d-ach-loading">No achievements found.</div>';
+        }
+
+        async function fetchAchievements() {
+          var baseUrl = window.__d2dNodeApiUrl;
+          if (!baseUrl) {
+            achBody.innerHTML = '<div class="d2d-ach-loading">Node API not configured.</div>';
+            achCounter.textContent = '';
+            return;
+          }
+          achBody.innerHTML = '<div class="d2d-ach-loading">Loading...</div>';
+          achCounter.textContent = '';
+
+          try {
+            // Fetch all achievement definitions
+            var metricsResp = await fetch(baseUrl + '/metrics');
+            if (!metricsResp.ok) throw new Error('HTTP ' + metricsResp.status);
+            var metricsData = await metricsResp.json();
+            var allAchievements = metricsData.achievements || [];
+
+            // Fetch user's unlocked achievements
+            var unlockedSet = new Set();
+            var playerAddr = window.__d2dPlayerAddress || null;
+            if (playerAddr) {
+              try {
+                var userResp = await fetch(baseUrl + '/metrics/users/' + encodeURIComponent(playerAddr));
+                if (userResp.ok) {
+                  var userData = await userResp.json();
+                  var userAch = userData.achievements || [];
+                  for (var i = 0; i < userAch.length; i++) {
+                    unlockedSet.add(userAch[i]);
+                  }
+                }
+              } catch (_) { /* user fetch failed, show all as locked */ }
+            }
+
+            renderAchievements(allAchievements, unlockedSet);
+          } catch (err) {
+            achBody.innerHTML = '<div class="d2d-ach-loading">Could not load achievements.<br>' +
+              (err.message || err) + '</div>';
+            achCounter.textContent = '';
+          }
+        }
+
+        achLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          achOverlay.style.display = 'flex';
+          achAddr.innerHTML = buildAddrHtml();
+          fetchAchievements();
+        });
+        achClose.addEventListener('click', function() {
+          achOverlay.style.display = 'none';
+        });
+        achOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (e.target === achOverlay) achOverlay.style.display = 'none';
+        });
+
+        // --- Leaderboard overlay ---
+        var lbLink = document.getElementById('d2d-leaderboard-link');
+        var lbOverlay = document.getElementById('d2d-lb-overlay');
+        var lbClose = document.getElementById('d2d-lb-close');
+        var lbBody = document.getElementById('d2d-lb-body');
+        var lbCounter = document.getElementById('d2d-lb-counter');
+        var lbAddr = document.getElementById('d2d-lb-addr');
+        var lbChannelsEl = document.getElementById('d2d-lb-channels');
+        var lbChannels = [];
+        var lbActiveChannel = null;
+
+        function truncAddr(addr) {
+          if (!addr) return '';
+          if (addr.length <= 16) return addr;
+          return addr.slice(0, 8) + '\u2026' + addr.slice(-6);
+        }
+
+        function renderLeaderboard(data, scoreUnit) {
+          var entries = data.entries || [];
+          var playerAddr = (window.__d2dPlayerAddress || '').toLowerCase();
+          var walletAddr = (window.__d2dWalletAddress || '').toLowerCase();
+          var myAddr = walletAddr || playerAddr;
+          lbCounter.textContent = data.totalPlayers != null ? data.totalPlayers + ' players' : '';
+
+          if (entries.length === 0 && !myAddr) {
+            lbBody.innerHTML = '<div class="d2d-lb-loading">No entries yet.</div>';
+            return;
+          }
+
+          var html = '<table class="d2d-lb-table"><thead><tr>' +
+            '<th>Rank</th><th>Player</th><th>' + (scoreUnit || 'Score') + '</th>' +
+            '</tr></thead><tbody>';
+
+          var foundMe = false;
+          for (var i = 0; i < entries.length; i++) {
+            var e = entries[i];
+            var isMe = myAddr && e.address && e.address.toLowerCase() === myAddr;
+            if (isMe) foundMe = true;
+            var rankClass = 'd2d-lb-rank';
+            if (e.rank === 1) rankClass += ' d2d-lb-rank-1';
+            else if (e.rank === 2) rankClass += ' d2d-lb-rank-2';
+            else if (e.rank === 3) rankClass += ' d2d-lb-rank-3';
+
+            var nameHtml = e.displayName
+              ? '<span>' + e.displayName + '</span><br><span class="d2d-lb-addr">' + truncAddr(e.address) + '</span>'
+              : '<span class="d2d-lb-addr">' + truncAddr(e.address) + '</span>';
+
+            html += '<tr' + (isMe ? ' class="d2d-lb-me"' : '') + '>' +
+              '<td class="' + rankClass + '">' + e.rank + '</td>' +
+              '<td>' + nameHtml + '</td>' +
+              '<td class="d2d-lb-score">' + e.score + '</td>' +
+              '</tr>';
+          }
+
+          // If current player is not in the fetched page, append them at the bottom
+          if (!foundMe && myAddr) {
+            html += '<tr><td colspan="3" style="text-align:center;color:#555544;padding:4px;">&#8942;</td></tr>';
+            html += '<tr class="d2d-lb-me">' +
+              '<td class="d2d-lb-rank">-</td>' +
+              '<td><span class="d2d-lb-addr">' + truncAddr(myAddr) + '</span></td>' +
+              '<td class="d2d-lb-score">0</td>' +
+              '</tr>';
+          }
+
+          html += '</tbody></table>';
+          lbBody.innerHTML = html;
+        }
+
+        function renderChannelButtons() {
+          if (lbChannels.length <= 1) {
+            lbChannelsEl.style.display = 'none';
+            return;
+          }
+          lbChannelsEl.style.display = 'flex';
+          var html = '';
+          for (var i = 0; i < lbChannels.length; i++) {
+            var ch = lbChannels[i];
+            var active = ch.id === lbActiveChannel ? ' active' : '';
+            html += '<button class="d2d-lb-ch-btn' + active + '" data-channel="' + ch.id + '">' +
+              ch.name + '</button>';
+          }
+          lbChannelsEl.innerHTML = html;
+        }
+
+        async function fetchChannelRankings(channelId) {
+          var baseUrl = window.__d2dNodeApiUrl;
+          lbBody.innerHTML = '<div class="d2d-lb-loading">Loading...</div>';
+          lbActiveChannel = channelId;
+          renderChannelButtons();
+
+          var channel = null;
+          for (var i = 0; i < lbChannels.length; i++) {
+            if (lbChannels[i].id === channelId) { channel = lbChannels[i]; break; }
+          }
+
+          try {
+            var resp = await fetch(baseUrl + '/metrics/' + encodeURIComponent(channelId));
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var data = await resp.json();
+            renderLeaderboard(data, channel ? channel.scoreUnit : null);
+          } catch (err) {
+            lbBody.innerHTML = '<div class="d2d-lb-loading">Could not load leaderboard.<br>' +
+              (err.message || err) + '</div>';
+          }
+        }
+
+        async function fetchLeaderboard() {
+          var baseUrl = window.__d2dNodeApiUrl;
+          if (!baseUrl) {
+            lbBody.innerHTML = '<div class="d2d-lb-loading">Node API not configured.</div>';
+            lbCounter.textContent = '';
+            lbChannelsEl.style.display = 'none';
+            return;
+          }
+          lbBody.innerHTML = '<div class="d2d-lb-loading">Loading...</div>';
+          lbCounter.textContent = '';
+
+          try {
+            var metricsResp = await fetch(baseUrl + '/metrics');
+            if (!metricsResp.ok) throw new Error('HTTP ' + metricsResp.status);
+            var metricsData = await metricsResp.json();
+            lbChannels = metricsData.channels || [];
+
+            if (lbChannels.length === 0) {
+              lbChannelsEl.style.display = 'none';
+              lbBody.innerHTML = '<div class="d2d-lb-loading">No leaderboard channels available.</div>';
+              return;
+            }
+
+            var defaultChannel = lbChannels[0].id;
+            for (var i = 0; i < lbChannels.length; i++) {
+              if (lbChannels[i].id === 'leaderboard') { defaultChannel = 'leaderboard'; break; }
+            }
+
+            await fetchChannelRankings(defaultChannel);
+          } catch (err) {
+            lbBody.innerHTML = '<div class="d2d-lb-loading">Could not load leaderboard.<br>' +
+              (err.message || err) + '</div>';
+            lbCounter.textContent = '';
+          }
+        }
+
+        lbChannelsEl.addEventListener('click', function(e) {
+          var btn = e.target.closest('.d2d-lb-ch-btn');
+          if (!btn) return;
+          var channelId = btn.getAttribute('data-channel');
+          if (channelId && channelId !== lbActiveChannel) {
+            fetchChannelRankings(channelId);
+          }
+        });
+
+        lbLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          lbOverlay.style.display = 'flex';
+          lbAddr.innerHTML = buildAddrHtml();
+          fetchLeaderboard();
+        });
+        lbClose.addEventListener('click', function() {
+          lbOverlay.style.display = 'none';
+        });
+        lbOverlay.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (e.target === lbOverlay) lbOverlay.style.display = 'none';
+        });
+
+        // Block pointer events on all overlays so clicks don't pass through to the Phaser canvas
+        var allOverlays = [htpOverlay, overlay, achOverlay, lbOverlay];
+        var pointerEvents = ['pointerdown', 'pointerup', 'mousedown', 'mouseup', 'touchstart', 'touchend'];
+        for (var i = 0; i < allOverlays.length; i++) {
+          for (var j = 0; j < pointerEvents.length; j++) {
+            allOverlays[i].addEventListener(pointerEvents[j], function(e) { e.stopPropagation(); });
+          }
+        }
+
+        // --- Dynamic background color from canvas sampling ---
+        (function() {
+          var bgR = 0x1f, bgG = 0x0e, bgB = 0x1c;
+          var LERP = 0.15;
+          var SAMPLES = 25;
+          var bgCanvas = null;
+
+          setInterval(function() {
+            if (!bgCanvas) {
+              bgCanvas = document.querySelector('canvas');
+              if (!bgCanvas) return;
+            }
+            var w = bgCanvas.width;
+            var h = bgCanvas.height;
+            if (w === 0 || h === 0) return;
+
+            var totalR = 0, totalG = 0, totalB = 0;
+            var gl = bgCanvas.getContext('webgl2') || bgCanvas.getContext('webgl');
+            if (gl) {
+              var pixel = new Uint8Array(4);
+              for (var i = 0; i < SAMPLES; i++) {
+                var x = Math.floor(Math.random() * w);
+                var y = Math.floor(Math.random() * h);
+                gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+                totalR += pixel[0];
+                totalG += pixel[1];
+                totalB += pixel[2];
+              }
+            } else {
+              var ctx = bgCanvas.getContext('2d');
+              if (!ctx) return;
+              for (var i = 0; i < SAMPLES; i++) {
+                var x = Math.floor(Math.random() * w);
+                var y = Math.floor(Math.random() * h);
+                var d = ctx.getImageData(x, y, 1, 1).data;
+                totalR += d[0];
+                totalG += d[1];
+                totalB += d[2];
+              }
+            }
+
+            var avgR = totalR / SAMPLES;
+            var avgG = totalG / SAMPLES;
+            var avgB = totalB / SAMPLES;
+
+            var dR = avgR - bgR, dG = avgG - bgG, dB = avgB - bgB;
+            if (dR * dR + dG * dG + dB * dB < 100) return;
+
+            bgR += dR * LERP;
+            bgG += dG * LERP;
+            bgB += dB * LERP;
+
+            var bgColor = 'rgb(' + Math.round(bgR) + ',' + Math.round(bgG) + ',' + Math.round(bgB) + ')';
+            document.documentElement.style.backgroundColor = bgColor;
+            document.body.style.backgroundColor = bgColor;
+          }, 100);
+        })();
+      })();
+    </script>
+  </body>
+</html>

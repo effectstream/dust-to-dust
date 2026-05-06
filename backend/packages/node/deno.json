@@ -1,0 +1,58 @@
+{
+  "name": "@dust2dust-backend/node",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./main.ts"
+  },
+  "tasks": {
+    "check": "deno task check:dev && deno task check:testnet && deno task check:mainnet",
+    "check:dev": "deno check --unstable-raw-imports main.dev.ts",
+    "check:testnet": "deno check --unstable-raw-imports main.testnet.ts",
+    "check:mainnet": "deno check --unstable-raw-imports main.mainnet.ts",
+
+    "node:start:dev": "deno run -A --inspect --unstable-raw-imports --env=.env.dev main.dev.ts",
+    "node:start:testnet": "deno run -A --inspect --unstable-raw-imports --env=.env.testnet main.testnet.ts",
+    "node:start:mainnet": "deno run -A --inspect --unstable-raw-imports --env=.env.mainnet main.mainnet.ts",
+
+    "dev": "EFFECTSTREAM_ENV=dev deno run -A --check --unstable-raw-imports --env=.env.dev start-script.dev.ts",
+    "testnet": "EFFECTSTREAM_ENV=testnet deno run -A --check --unstable-raw-imports --env=.env.testnet start-script.testnet.ts",
+    "mainnet": "EFFECTSTREAM_ENV=mainnet deno run -A --check --unstable-raw-imports --env=.env.mainnet start-script.mainnet.ts"
+  },
+  "imports": {
+    "@std/path": "jsr:@std/path@^1.1.3",
+    "@paimaexample/concise": "jsr:@paimaexample/concise@0.10.24",
+    "@paimaexample/config": "jsr:@paimaexample/config@0.10.24",
+    "@paimaexample/coroutine": "jsr:@paimaexample/coroutine@0.10.24",
+    "@paimaexample/db": "jsr:@paimaexample/db@0.10.24",
+    "@paimaexample/log": "jsr:@paimaexample/log@0.10.24",
+    "@paimaexample/orchestrator": "jsr:@paimaexample/orchestrator@0.10.24",
+    "@paimaexample/runtime": "jsr:@paimaexample/runtime@0.10.24",
+    "@paimaexample/sm": "jsr:@paimaexample/sm@0.10.24",
+    "@paimaexample/utils": "jsr:@paimaexample/utils@0.10.24",
+    "viem": "npm:viem@2.37.3",
+    "@sinclair/typebox": "npm:@sinclair/typebox@0.34.41",
+    "effection": "npm:effection@^3.5.0",
+    "@midnight-ntwrk/dapp-connector-api": "npm:@midnight-ntwrk/dapp-connector-api@4.0.1",
+    "@midnight-ntwrk/compact-runtime": "npm:@midnight-ntwrk/compact-runtime@0.15.0",
+    "@midnight-ntwrk/ledger-v8": "npm:@midnight-ntwrk/ledger-v8@8.0.3",
+    "@midnight-ntwrk/midnight-js-network-id": "npm:@midnight-ntwrk/midnight-js-network-id@4.0.2",
+    "@midnight-ntwrk/midnight-js-types": "npm:@midnight-ntwrk/midnight-js-types@4.0.2",
+    "@midnight-ntwrk/midnight-js-utils": "npm:@midnight-ntwrk/midnight-js-utils@4.0.2",
+    "@midnight-ntwrk/midnight-js-contracts": "npm:@midnight-ntwrk/midnight-js-contracts@4.0.2",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "npm:@midnight-ntwrk/midnight-js-indexer-public-data-provider@4.0.2",
+    "@midnight-ntwrk/midnight-js-http-client-proof-provider": "npm:@midnight-ntwrk/midnight-js-http-client-proof-provider@4.0.2",
+    "@midnight-ntwrk/midnight-js-node-zk-config-provider": "npm:@midnight-ntwrk/midnight-js-node-zk-config-provider@4.0.2",
+    "@midnight-ntwrk/midnight-js-level-private-state-provider": "npm:@midnight-ntwrk/midnight-js-level-private-state-provider@4.0.2",
+    "@midnight-ntwrk/wallet-sdk-abstractions": "npm:@midnight-ntwrk/wallet-sdk-abstractions@2.0.0",
+    "@midnight-ntwrk/wallet-sdk-facade": "npm:@midnight-ntwrk/wallet-sdk-facade@3.0.0",
+    "@midnight-ntwrk/wallet-sdk-hd": "npm:@midnight-ntwrk/wallet-sdk-hd@3.0.1",
+    "@midnight-ntwrk/wallet-sdk-shielded": "npm:@midnight-ntwrk/wallet-sdk-shielded@2.1.0",
+    "@midnight-ntwrk/wallet-sdk-dust-wallet": "npm:@midnight-ntwrk/wallet-sdk-dust-wallet@3.0.0",
+    "@midnight-ntwrk/wallet-sdk-unshielded-wallet": "npm:@midnight-ntwrk/wallet-sdk-unshielded-wallet@2.1.0",
+    "@midnight-ntwrk/wallet-sdk-address-format": "npm:@midnight-ntwrk/wallet-sdk-address-format@3.1.0",
+    "@midnight-ntwrk/zswap": "npm:@midnight-ntwrk/zswap@^4.0.0"
+  },
+  "compilerOptions": {
+    "strict": true
+  }
+}
