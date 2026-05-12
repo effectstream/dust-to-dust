@@ -30,9 +30,9 @@
     "contract-game2:patch-frontend:mainnet": "MIDNIGHT_NETWORK_ID=mainnet deno --unstable-detect-cjs -A contract-game2-deploy.ts patch-frontend-env"
   },
   "imports": {
-    "@paimaexample/npm-midnight-node": "npm:@paimaexample/npm-midnight-node@0.10.24",
-    "@paimaexample/npm-midnight-indexer": "npm:@paimaexample/npm-midnight-indexer@0.10.24",
-    "@paimaexample/npm-midnight-proof-server": "npm:@paimaexample/npm-midnight-proof-server@0.10.24",
+    "@paimaexample/npm-midnight-node": "npm:@paimaexample/npm-midnight-node@0.11.3",
+    "@paimaexample/npm-midnight-indexer": "npm:@paimaexample/npm-midnight-indexer@0.11.3",
+    "@paimaexample/npm-midnight-proof-server": "npm:@paimaexample/npm-midnight-proof-server@0.11.3",
     "@midnight-ntwrk/compact-runtime": "npm:@midnight-ntwrk/compact-runtime@0.15.0",
     "@midnight-ntwrk/ledger-v8": "npm:@midnight-ntwrk/ledger-v8@8.0.3",
     "@midnight-ntwrk/midnight-js-contracts": "npm:@midnight-ntwrk/midnight-js-contracts@4.0.2",

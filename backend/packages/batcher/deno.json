@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "exports": "./main.ts",
   "imports": {
-    "@paimaexample/batcher": "jsr:@paimaexample/batcher@0.10.25",
-    "@paimaexample/midnight-contracts": "jsr:@paimaexample/midnight-contracts@0.10.24",
-    "@paimaexample/utils": "jsr:@paimaexample/utils@0.10.24",
+    "@paimaexample/batcher": "jsr:@paimaexample/batcher@0.11.3",
+    "@paimaexample/midnight-contracts": "jsr:@paimaexample/midnight-contracts@0.11.3",
+    "@paimaexample/utils": "jsr:@paimaexample/utils@0.11.3",
     "effection": "npm:effection@^3.5.0",
     "@midnight-ntwrk/ledger-v8": "npm:@midnight-ntwrk/ledger-v8@8.0.3",
     "@midnight-ntwrk/midnight-js-utils": "npm:@midnight-ntwrk/midnight-js-utils@4.0.2",
