@@ -13,9 +13,9 @@
     "check:mainnet": "deno task -f @dust2dust-backend/node check:mainnet"
   },
   "imports": {
-    "@paimaexample/tui": "jsr:@paimaexample/tui@0.10.24",
-    "@paimaexample/midnight-contracts": "jsr:@paimaexample/midnight-contracts@0.10.24",
-    "@paimaexample/evm-contracts": "jsr:@paimaexample/evm-contracts@0.10.24",
+    "@paimaexample/tui": "jsr:@paimaexample/tui@0.11.3",
+    "@paimaexample/midnight-contracts": "jsr:@paimaexample/midnight-contracts@0.11.3",
+    "@paimaexample/evm-contracts": "jsr:@paimaexample/evm-contracts@0.11.3",
     "wait-on": "npm:wait-on@^9.0.4"
   },
   "lint": {
